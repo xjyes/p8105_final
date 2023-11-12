@@ -5,10 +5,10 @@ output: github_document
 Manye Dong (md4270), Haotian Tang (ht2630), Jingyi Xu (jx2562), Longyi Zhao (lz2949)
 
 ### Project Title
-Unlocking the Mystery: Are NYC Students' Weights Telling a Hidden Story?
+Unlocking the Mystery: Are NY State Students' Weights Telling a Hidden Story?
 
 ### Motivation
-The motivation for our project is to conduct a comprehensive analysis to understand the multifactorial dimensions of New York state student health, specifically relating to obesity and overweight prevalence. Our project will seek to establish correlations between access to food availability, demographic variables, and weight status to better understand the impact of social determinants on student health outcomes. Insights gained from this analysis will be instrumental in informing public health interventions, educational policies, and community-based programs to promote healthier lifestyles and address the obesity epidemic in New York City. 
+The motivation for our project is to conduct a comprehensive analysis to understand the multifactorial dimensions of New York state student health, specifically relating to obesity and overweight prevalence. Our project will seek to establish correlations between access to food availability, demographic variables, and weight status to better understand the impact of social determinants on student health outcomes. Insights gained from this analysis will be instrumental in informing public health interventions, educational policies, and community-based programs to promote healthier lifestyles and address the obesity epidemic in New York state. 
 
 ### Intended Final Products
 Our project will develop a web platform designed for the exploration of intrinsic connections between the weight status of New York state students and their demographic characteristics. A multifaceted correlation analysis will be conducted to comprehensively analyze each demographic variable, including causal inferences, regression analyses, and hypothesis testing. Subsequently, the outcomes will be presented in the form of interactive graphs and tabulated data for enhanced accessibility and clarity. Furthermore, a narrated screencast will provide an intuitive overview of the final product, offering an in-depth understanding of the research findings and their implications.

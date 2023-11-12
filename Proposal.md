@@ -6,7 +6,8 @@ Zhao (lz2949)
 
 ### Project Title
 
-Unlocking the Mystery: Are NYC Students’ Weights Telling a Hidden Story?
+Unlocking the Mystery: Are NY State Students’ Weights Telling a Hidden
+Story?
 
 ### Motivation
 
@@ -19,7 +20,7 @@ understand the impact of social determinants on student health outcomes.
 Insights gained from this analysis will be instrumental in informing
 public health interventions, educational policies, and community-based
 programs to promote healthier lifestyles and address the obesity
-epidemic in New York City.
+epidemic in New York state.
 
 ### Intended Final Products
 
