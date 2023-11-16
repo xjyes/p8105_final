@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Data Cleaning"
 author: "Manye Dong"
 date: "2023-11-16"
 output: github_document
@@ -26,15 +26,18 @@ Student_Weight =
 
 head(Student_Weight)
 ```
-```{r}
+
+```{r message=FALSE}
 Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region)
 Student_Weight
 ```
 
-```{r}
+```{r message=FALSE}
 Demographics_all = read_csv("data/Demographics_all.csv")
 ```
-```{r}
+
+这里先只选了2019年的，我们可以把2015-2019年的分开成4个dataset（每一年的处理code都复制这个就行），这样每一个dataset的size能小点，不至于load不进来
+```{r message=FALSE}
 Demographics_all = 
   Demographics_all |> 
   janitor::clean_names() |>
@@ -44,9 +47,11 @@ Demographics_all =
 Demographics_all
 ```
 
-```{r}
+```{r message=FALSE}
 Enrollments_all = read_csv("data/Enrollments_all.csv")
 ```
+
+这里也是，先只选了2019年的
 ```{r}
 Enrollments_all = 
   Enrollments_all |>
@@ -57,8 +62,9 @@ Enrollments_all =
 
 head(Enrollments_all)
 ```
+
 Join these datasets:
-```{r}
+```{r message=FALSE}
 result = merge(Student_Weight, Demographics_all, by = "district", all.y = TRUE) |>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
   # 再考虑一下 只drop没有district和county的data
