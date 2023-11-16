@@ -72,7 +72,7 @@ result = merge(Student_Weight, Demographics_all, by = "district")|>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
   drop_na()
 
-result
+head(result)
 ```
 
 ```{r}
