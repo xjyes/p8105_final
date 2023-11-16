@@ -38,14 +38,15 @@ Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWI
 ```
 
 ```{r}
+Student_Weight |> group_by(county)
+```
+
+
+```{r}
 show_student_weight = 
   Student_Weight |>
   head(5) |>
   knitr::kable(digits = 3)
-```
-
-```{r}
-show_student_weight
 ```
 
 Description and what we did: xxxxx
@@ -55,7 +56,6 @@ Description and what we did: xxxxx
 Demographics_all = read_csv("data/Demographics_all.csv")
 ```
 
-这里先只选了2019年的，我们可以把2015-2019年的分开成4个dataset（每一年的处理code都复制这个就行），这样每一个dataset的size能小点，不至于load不进来
 ```{r message=FALSE}
 Demographics_all = 
   Demographics_all |> 
@@ -76,19 +76,30 @@ head(result)
 ```
 
 ```{r}
-result |>
-  group_by()
+result  = result |>
+  group_by(county, grade_level, sex) |>
+  summarise(total_overweight = sum(number_overweight), 
+            total_obese = sum(number_overweight),
+            total_overweight_or_obese = sum(number_overweight_or_obese),
+            total_healthy = sum(number_healthy_weight),
+            num_asian = num_asian,
+            num_black = num_black,
+            num_hisp = num_hisp,
+            num_am_ind = num_am_ind, 
+            num_white = num_white,
+            num_female = num_female, 
+            num_male = num_male, 
+            num_lep = num_lep,
+            num_multi = num_multi,
+            num_swd = num_swd,
+            num_ecdis = num_ecdis
+)
+
+result
 ```
 
-
-See the unique grade_level:
 ```{r}
-unique(result$grade_level)
-```
-
-
-```{r}
-#write.csv(result, file = "result.csv", row.names = FALSE)
+write.csv(result, file = "result_2019.csv", row.names = FALSE)
 ```
 
 
