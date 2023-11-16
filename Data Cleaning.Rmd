@@ -12,6 +12,7 @@ library(readr)
 ```{r message=FALSE}
 Student_Weight = read_csv("data/Student Weight.csv")
 ```
+
 ```{r}
 Student_Weight  = 
   Student_Weight |>
@@ -19,16 +20,14 @@ Student_Weight  =
   rename('district'='location_code')
 
 Student_Weight$year_reported = sub(".*-", "", Student_Weight$year_reported)
-  
+
 Student_Weight = 
   Student_Weight |>
   mutate(year_reported = as.numeric(Student_Weight$year_reported))
-
-head(Student_Weight)
 ```
 
 ```{r message=FALSE}
-Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region)
+Student_Weight = Student_Weight |> filter(year_reported==2017 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region)
 Student_Weight
 ```
 
@@ -42,7 +41,7 @@ Demographics_all =
   Demographics_all |> 
   janitor::clean_names() |>
   mutate(district = as.numeric(district)) |>
-  filter(year==2019)
+  filter(year==2017)
 
 Demographics_all
 ```
@@ -58,19 +57,28 @@ Enrollments_all =
   janitor::clean_names() |>
   mutate(distrid=as.numeric(distrid)) |>
   rename('district' = 'distrid') |>
-  filter(year==2019)
+  filter(year==2017)
 
 head(Enrollments_all)
 ```
 
 Join these datasets:
+
 ```{r message=FALSE}
 result = merge(Student_Weight, Demographics_all, by = "district", all.y = TRUE) |>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
-  # 再考虑一下 只drop没有district和county的data
   drop_na()
 
-head(result)
+result
+```
+
+See the unique grade_level:
+```{r}
+unique(result$grade_level)
+```
+
+```{r}
+result |> filter(sex=='FEMALE')
 ```
 
 
