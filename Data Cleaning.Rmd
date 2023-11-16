@@ -1,0 +1,75 @@
+---
+title: "Untitled"
+author: "Manye Dong"
+date: "2023-11-16"
+output: github_document
+---
+```{r message=FALSE}
+library(tidyverse)
+library(readr)
+```
+
+```{r message=FALSE}
+Student_Weight = read_csv("Student Weight.csv")
+```
+```{r}
+Student_Weight  = 
+  Student_Weight |>
+  janitor::clean_names() |>
+  rename('district'='location_code')
+
+Student_Weight$year_reported = sub(".*-", "", Student_Weight$year_reported)
+  
+Student_Weight = 
+  Student_Weight |>
+  mutate(year_reported = as.numeric(Student_Weight$year_reported))
+
+head(Student_Weight)
+```
+```{r}
+Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region)
+Student_Weight
+```
+
+```{r}
+Demographics_all = read_csv("Demographics_all.csv")
+```
+```{r}
+Demographics_all = 
+  Demographics_all |> 
+  janitor::clean_names() |>
+  mutate(district = as.numeric(district)) |>
+  filter(year==2019)
+
+Demographics_all
+```
+
+```{r}
+Enrollments_all = read_csv("Enrollments_all.csv")
+```
+```{r}
+Enrollments_all = 
+  Enrollments_all |>
+  janitor::clean_names() |>
+  mutate(distrid=as.numeric(distrid)) |>
+  rename('district' = 'distrid') |>
+  filter(year==2019)
+
+head(Enrollments_all)
+```
+Join these datasets:
+```{r}
+result = merge(Student_Weight, Demographics_all, by = "district", all.y = TRUE) |>
+  select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
+  # 再考虑一下 只drop没有district和county的data
+  drop_na()
+
+result
+```
+
+
+```{r}
+write.csv(result, file = "result.csv", row.names = FALSE)
+```
+
+
