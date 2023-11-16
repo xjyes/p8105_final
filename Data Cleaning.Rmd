@@ -15,26 +15,23 @@ Student_Weight = read_csv("data/Student Weight.csv")
 ```
 
 ```{r}
-head(Student_Weight)
+Student_Weight  = 
+  Student_Weight |>
+  janitor::clean_names() |>
+  rename('district'='location_code') |>
+  filter(year_reported %in% c("2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019"))
 ```
 
 
 ```{r}
-Student_Weight  = 
-  Student_Weight |>
-  janitor::clean_names() |>
-  rename('district'='location_code')
-
 Student_Weight$year_reported = sub(".*-", "", Student_Weight$year_reported)
 
 Student_Weight = 
   Student_Weight |>
-  mutate(year_reported = as.numeric(Student_Weight$year_reported))
+  mutate(year_reported = as.numeric(Student_Weight$year_reported)) |>
+  filter(grade_level!="DISTRICT TOTAL" & sex!="ALL")
 ```
 
-```{r}
-Student_Weight
-```
 
 ```{r message=FALSE}
 Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region, -area_name)
@@ -73,24 +70,14 @@ Demographics_all
 ```{r message=FALSE}
 result = merge(Student_Weight, Demographics_all, by = "district")|>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
-  filter(grade_level!='DISTRICT TOTAL' & sex!='ALL') |>
   drop_na()
 
-head(result)
+result
 ```
 
 ```{r}
-result  = 
-  result |> 
-  mutate(total_by_overweight = number_overweight / (percent_overweight/100),
-            total_by_obese = number_obese / (percent_obese/100),
-            total_by_or = number_overweight_or_obese / (percent_overweight_or_obese/100),
-            total_by_healthy = number_healthy_weight / (percent_healthy_weight/100),
-            total_students = mean(c(total_by_overweight, total_by_obese, total_by_or, total_by_healthy)))
-```
-
-```{r}
-unique(result$total_students)
+result |>
+  group_by()
 ```
 
 
