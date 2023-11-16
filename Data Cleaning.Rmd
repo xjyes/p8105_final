@@ -10,7 +10,7 @@ library(readr)
 ```
 
 ```{r message=FALSE}
-Student_Weight = read_csv("Student Weight.csv")
+Student_Weight = read_csv("data/Student Weight.csv")
 ```
 ```{r}
 Student_Weight  = 
@@ -32,7 +32,7 @@ Student_Weight
 ```
 
 ```{r}
-Demographics_all = read_csv("Demographics_all.csv")
+Demographics_all = read_csv("data/Demographics_all.csv")
 ```
 ```{r}
 Demographics_all = 
@@ -45,7 +45,7 @@ Demographics_all
 ```
 
 ```{r}
-Enrollments_all = read_csv("Enrollments_all.csv")
+Enrollments_all = read_csv("data/Enrollments_all.csv")
 ```
 ```{r}
 Enrollments_all = 
@@ -64,12 +64,12 @@ result = merge(Student_Weight, Demographics_all, by = "district", all.y = TRUE) 
   # 再考虑一下 只drop没有district和county的data
   drop_na()
 
-result
+head(result)
 ```
 
 
 ```{r}
-write.csv(result, file = "result.csv", row.names = FALSE)
+#write.csv(result, file = "result.csv", row.names = FALSE)
 ```
 
 
