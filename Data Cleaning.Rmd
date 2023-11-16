@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning"
-author: "Manye Dong"
+author: "Final Project Group"
 date: "2023-11-16"
 output: github_document
 ---
@@ -13,6 +13,11 @@ library(readr)
 ```{r message=FALSE}
 Student_Weight = read_csv("data/Student Weight.csv")
 ```
+
+```{r}
+head(Student_Weight)
+```
+
 
 ```{r}
 Student_Weight  = 
@@ -64,17 +69,30 @@ Demographics_all =
 Demographics_all
 ```
 
-其实另一个enrollment这个dataset有没有都不太重要哈哈哈，最后也不太需要它的info，我就先给删了
-
 ### Join Demographics with Student Weight
-不知道有没有办法让free lunch这几个column都不要变成NA哈哈哈，实在不行就算了
 ```{r message=FALSE}
 result = merge(Student_Weight, Demographics_all, by = "district")|>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
+  filter(grade_level!='DISTRICT TOTAL' & sex!='ALL') |>
   drop_na()
 
-result
+head(result)
 ```
+
+```{r}
+result  = 
+  result |> 
+  mutate(total_by_overweight = number_overweight / (percent_overweight/100),
+            total_by_obese = number_obese / (percent_obese/100),
+            total_by_or = number_overweight_or_obese / (percent_overweight_or_obese/100),
+            total_by_healthy = number_healthy_weight / (percent_healthy_weight/100),
+            total_students = mean(c(total_by_overweight, total_by_obese, total_by_or, total_by_healthy)))
+```
+
+```{r}
+unique(result$total_students)
+```
+
 
 See the unique grade_level:
 ```{r}
