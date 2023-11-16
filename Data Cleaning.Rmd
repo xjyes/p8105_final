@@ -9,6 +9,7 @@ library(tidyverse)
 library(readr)
 ```
 
+### Student Weight Data
 ```{r message=FALSE}
 Student_Weight = read_csv("data/Student Weight.csv")
 ```
@@ -26,11 +27,28 @@ Student_Weight =
   mutate(year_reported = as.numeric(Student_Weight$year_reported))
 ```
 
-```{r message=FALSE}
-Student_Weight = Student_Weight |> filter(year_reported==2017 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region)
+```{r}
 Student_Weight
 ```
 
+```{r message=FALSE}
+Student_Weight = Student_Weight |> filter(year_reported==2019 & county!='STATEWIDE (EXCLUDING NYC)') |> select(-region, -area_name)
+```
+
+```{r}
+show_student_weight = 
+  Student_Weight |>
+  head(5) |>
+  knitr::kable(digits = 3)
+```
+
+```{r}
+show_student_weight
+```
+
+Description and what we did: xxxxx
+
+### Demographics Data
 ```{r message=FALSE}
 Demographics_all = read_csv("data/Demographics_all.csv")
 ```
@@ -41,31 +59,17 @@ Demographics_all =
   Demographics_all |> 
   janitor::clean_names() |>
   mutate(district = as.numeric(district)) |>
-  filter(year==2017)
+  filter(year==2019)
 
 Demographics_all
 ```
 
+其实另一个enrollment这个dataset有没有都不太重要哈哈哈，最后也不太需要它的info，我就先给删了
+
+### Join Demographics with Student Weight
+不知道有没有办法让free lunch这几个column都不要变成NA哈哈哈，实在不行就算了
 ```{r message=FALSE}
-Enrollments_all = read_csv("data/Enrollments_all.csv")
-```
-
-这里也是，先只选了2019年的
-```{r}
-Enrollments_all = 
-  Enrollments_all |>
-  janitor::clean_names() |>
-  mutate(distrid=as.numeric(distrid)) |>
-  rename('district' = 'distrid') |>
-  filter(year==2017)
-
-head(Enrollments_all)
-```
-
-Join these datasets:
-
-```{r message=FALSE}
-result = merge(Student_Weight, Demographics_all, by = "district", all.y = TRUE) |>
+result = merge(Student_Weight, Demographics_all, by = "district")|>
   select(-num_free_lunch, -num_reduced_lunch, -num_ell) |>
   drop_na()
 
@@ -75,10 +79,6 @@ result
 See the unique grade_level:
 ```{r}
 unique(result$grade_level)
-```
-
-```{r}
-result |> filter(sex=='FEMALE')
 ```
 
 
