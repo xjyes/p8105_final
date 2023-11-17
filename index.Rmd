@@ -1,0 +1,10 @@
+---
+title: "Unlocking the Mystery: Are NY State Students' Weights Telling a Hidden Story?"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cerulean
+---
+
+
