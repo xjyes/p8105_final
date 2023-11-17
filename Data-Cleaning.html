@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data-Cleaning</title>
+
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Data.html">Data</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="contact.html">Contact</a>
+</li>
+<li>
+  <a href="http://github.com/Haotian-Tang/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<div id="data-cleaning" class="section level1">
+<h1>Data Cleaning</h1>
+<p>Final Project Group 2023-11-16</p>
+<pre class="r"><code>library(tidyverse)
+library(readr)</code></pre>
+<div id="student-weight-data" class="section level3">
+<h3>Student Weight Data</h3>
+<pre class="r"><code>Student_Weight = read_csv(&quot;data/Student Weight.csv&quot;)</code></pre>
+<pre class="r"><code>Student_Weight  = 
+  Student_Weight |&gt;
+  janitor::clean_names() |&gt;
+  rename(&#39;district&#39;=&#39;location_code&#39;) |&gt;
+  filter(year_reported %in% c(&quot;2014-2015&quot;, &quot;2015-2016&quot;, &quot;2016-2017&quot;, &quot;2017-2018&quot;, &quot;2018-2019&quot;))</code></pre>
+<pre class="r"><code>Student_Weight$year_reported = sub(&quot;.*-&quot;, &quot;&quot;, Student_Weight$year_reported)
+
+Student_Weight = 
+  Student_Weight |&gt;
+  mutate(year_reported = as.numeric(Student_Weight$year_reported)) |&gt;
+  filter(grade_level!=&quot;DISTRICT TOTAL&quot; &amp; sex!=&quot;ALL&quot;)</code></pre>
+<pre class="r"><code>Student_Weight = Student_Weight |&gt; filter(year_reported==2019 &amp; county!=&#39;STATEWIDE (EXCLUDING NYC)&#39;) |&gt; select(-region, -area_name)</code></pre>
+<pre class="r"><code>Student_Weight |&gt; group_by(county)</code></pre>
+<pre><code>## # A tibble: 1,360 × 13
+## # Groups:   county [57]
+##    district county year_reported number_overweight percent_overweight
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;             &lt;dbl&gt;              &lt;dbl&gt;
+##  1    10402 ALBANY          2019                28               11.4
+##  2    10402 ALBANY          2019                35               13.9
+##  3    10402 ALBANY          2019                21               23.6
+##  4    10402 ALBANY          2019                 9                9.9
+##  5    10500 ALBANY          2019                36               20  
+##  6    10500 ALBANY          2019                39               17.7
+##  7    10500 ALBANY          2019                18               16.7
+##  8    10500 ALBANY          2019                16               20  
+##  9    10601 ALBANY          2019                70               13.8
+## 10    10601 ALBANY          2019                81               16.5
+## # ℹ 1,350 more rows
+## # ℹ 8 more variables: number_obese &lt;dbl&gt;, percent_obese &lt;dbl&gt;,
+## #   number_overweight_or_obese &lt;dbl&gt;, percent_overweight_or_obese &lt;dbl&gt;,
+## #   grade_level &lt;chr&gt;, number_healthy_weight &lt;dbl&gt;,
+## #   percent_healthy_weight &lt;dbl&gt;, sex &lt;chr&gt;</code></pre>
+<pre class="r"><code>show_student_weight = 
+  Student_Weight |&gt;
+  head(5) |&gt;
+  knitr::kable(digits = 3)</code></pre>
+<p>Description and what we did: xxxxx</p>
+</div>
+<div id="demographics-data" class="section level3">
+<h3>Demographics Data</h3>
+<pre class="r"><code>Demographics_all = read_csv(&quot;data/Demographics_all.csv&quot;)</code></pre>
+<pre class="r"><code>Demographics_all = 
+  Demographics_all |&gt; 
+  janitor::clean_names() |&gt;
+  mutate(district = as.numeric(district)) |&gt;
+  filter(year==2019)
+
+Demographics_all</code></pre>
+<pre><code>## # A tibble: 719 × 16
+##    district  year num_asian num_black num_hisp num_am_ind num_white num_female
+##       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1    10100  2019       836      4388     1765         29      1883       4641
+##  2    10201  2019         4         5       19          1       706        369
+##  3    10306  2019       290       112      155          2      3645       2131
+##  4    10402  2019        14        74      152          1      1504        909
+##  5    10500  2019        33       208      174          7      1429       1008
+##  6    10601  2019       498       395      425          6      3105       2401
+##  7    10615  2019        95       105       13          3        81        144
+##  8    10623  2019      1121       382      334         16      3703       2914
+##  9    10701  2019        NA        33        8         NA       222        153
+## 10    10802  2019       701       201      187          7      3568       2390
+## # ℹ 709 more rows
+## # ℹ 8 more variables: num_male &lt;dbl&gt;, num_lep &lt;dbl&gt;, num_free_lunch &lt;dbl&gt;,
+## #   num_reduced_lunch &lt;dbl&gt;, num_multi &lt;dbl&gt;, num_swd &lt;dbl&gt;, num_ecdis &lt;dbl&gt;,
+## #   num_ell &lt;dbl&gt;</code></pre>
+</div>
+<div id="join-demographics-with-student-weight" class="section level3">
+<h3>Join Demographics with Student Weight</h3>
+<pre class="r"><code>result = merge(Student_Weight, Demographics_all, by = &quot;district&quot;)|&gt;
+  select(-num_free_lunch, -num_reduced_lunch, -num_ell) |&gt;
+  drop_na()
+
+head(result)</code></pre>
+<pre><code>##   district county year_reported number_overweight percent_overweight
+## 1    10402 ALBANY          2019                28               11.4
+## 2    10402 ALBANY          2019                35               13.9
+## 3    10402 ALBANY          2019                21               23.6
+## 4    10402 ALBANY          2019                 9                9.9
+## 5    10500 ALBANY          2019                16               20.0
+## 6    10500 ALBANY          2019                36               20.0
+##   number_obese percent_obese number_overweight_or_obese
+## 1           28          11.4                         56
+## 2           42          16.7                         77
+## 3           17          19.1                         38
+## 4           28          30.8                         37
+## 5           22          27.5                         38
+## 6           38          21.1                         74
+##   percent_overweight_or_obese grade_level number_healthy_weight
+## 1                        22.8  ELEMENTARY                   181
+## 2                        30.6  ELEMENTARY                   159
+## 3                        42.7 MIDDLE/HIGH                    51
+## 4                        40.7 MIDDLE/HIGH                    54
+## 5                        47.5 MIDDLE/HIGH                    42
+## 6                        41.1  ELEMENTARY                    96
+##   percent_healthy_weight    sex year num_asian num_black num_hisp num_am_ind
+## 1                  0.736 FEMALE 2019        14        74      152          1
+## 2                  0.631   MALE 2019        14        74      152          1
+## 3                  0.573 FEMALE 2019        14        74      152          1
+## 4                  0.593   MALE 2019        14        74      152          1
+## 5                  0.525   MALE 2019        33       208      174          7
+## 6                  0.533 FEMALE 2019        33       208      174          7
+##   num_white num_female num_male num_lep num_multi num_swd num_ecdis
+## 1      1504        909      934      13        98     320       786
+## 2      1504        909      934      13        98     320       786
+## 3      1504        909      934      13        98     320       786
+## 4      1504        909      934      13        98     320       786
+## 5      1429       1008     1007      25       164     338      1175
+## 6      1429       1008     1007      25       164     338      1175</code></pre>
+<pre class="r"><code>result  = result |&gt;
+  group_by(county, grade_level, sex) |&gt;
+  summarise(total_overweight = sum(number_overweight), 
+            total_obese = sum(number_overweight),
+            total_overweight_or_obese = sum(number_overweight_or_obese),
+            total_healthy = sum(number_healthy_weight),
+            num_asian = num_asian,
+            num_black = num_black,
+            num_hisp = num_hisp,
+            num_am_ind = num_am_ind, 
+            num_white = num_white,
+            num_female = num_female, 
+            num_male = num_male, 
+            num_lep = num_lep,
+            num_multi = num_multi,
+            num_swd = num_swd,
+            num_ecdis = num_ecdis
+)</code></pre>
+<pre><code>## Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in dplyr 1.1.0.
+## ℹ Please use `reframe()` instead.
+## ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()` always returns an
+##   ungrouped data frame and adjust accordingly.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+
+## `summarise()` has grouped output by &#39;county&#39;, &#39;grade_level&#39;, &#39;sex&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>result</code></pre>
+<pre><code>## # A tibble: 831 × 18
+## # Groups:   county, grade_level, sex [198]
+##    county grade_level sex    total_overweight total_obese total_overweight_or_…¹
+##    &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;             &lt;dbl&gt;       &lt;dbl&gt;                  &lt;dbl&gt;
+##  1 ALBANY ELEMENTARY  FEMALE              297         297                    590
+##  2 ALBANY ELEMENTARY  FEMALE              297         297                    590
+##  3 ALBANY ELEMENTARY  FEMALE              297         297                    590
+##  4 ALBANY ELEMENTARY  FEMALE              297         297                    590
+##  5 ALBANY ELEMENTARY  FEMALE              297         297                    590
+##  6 ALBANY ELEMENTARY  MALE                316         316                    635
+##  7 ALBANY ELEMENTARY  MALE                316         316                    635
+##  8 ALBANY ELEMENTARY  MALE                316         316                    635
+##  9 ALBANY ELEMENTARY  MALE                316         316                    635
+## 10 ALBANY ELEMENTARY  MALE                316         316                    635
+## # ℹ 821 more rows
+## # ℹ abbreviated name: ¹​total_overweight_or_obese
+## # ℹ 12 more variables: total_healthy &lt;dbl&gt;, num_asian &lt;dbl&gt;, num_black &lt;dbl&gt;,
+## #   num_hisp &lt;dbl&gt;, num_am_ind &lt;dbl&gt;, num_white &lt;dbl&gt;, num_female &lt;dbl&gt;,
+## #   num_male &lt;dbl&gt;, num_lep &lt;dbl&gt;, num_multi &lt;dbl&gt;, num_swd &lt;dbl&gt;,
+## #   num_ecdis &lt;dbl&gt;</code></pre>
+<pre class="r"><code>write.csv(result, file = &quot;result_2019.csv&quot;, row.names = FALSE)</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

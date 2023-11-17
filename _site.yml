@@ -1,0 +1,17 @@
+name: "Final Project"
+output_dir: "."
+navbar:
+  title: "Home"
+  left: 
+    - text: "Data"
+      href: Data.html
+  right:
+    - text: "About"
+      href: about.html
+    - text: "Contact"
+      href: contact.html
+    - icon: fa-github fa-lg
+      href: http://github.com/Haotian-Tang/
+output:
+  html_document:
+    theme: cerulean
